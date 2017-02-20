@@ -1,8 +1,9 @@
 ---
-title: Deployment Options
+title: Architecture Options For a Nuxeo Cluster
+description: This page covers common architecture options to deploy a Nuxeo cluster.
 review:
     comment: ''
-    date: '2017-01-30'
+    date: '2017-02-22'
     status: ok
 labels:
     - lts2016-ok
@@ -237,91 +238,16 @@ history:
 ---
 {{! excerpt}}
 
-In this section, the different deployment possibilities are described.
+This page covers common architecture options to deploy a Nuxeo cluster for production use.
 
 {{! /excerpt}}
 
-Thanks to Nuxeo Runtime and to the bundle system, the Nuxeo Platform deployment can be adapted to your needs:
+Setting up a Nuxeo cluster consists in answering to three main constraint types, independently or in combination with the others:
+- Scalability: my setup has to scale easily without sacrificing performances to adapt to a varying load.
+- Failover: when something goes wrong, I should be able to restore service quickly, losing as little data as possible in the process.
+- High Availability: my service should always be available, no matter what happens.
 
-- Deploy only the bundles you really need
-- Deploy on multiple servers if needed
-- Deploy on multiple infrastructures: Tomcat, Pojo, unit tests
-
-## Simple Deployment
-
-For a simple deployment you have to define the target deployment platform:
-
-- Define the target Nuxeo distribution:
-    - Bare server
-    - JSF UI
-    - Web UI
-- Define the target deployment platform:
-    - Prepackaged Tomcat Server (including Nuxeo + Transaction manager + JCA + Pooling)
-    - Static WAR (see [Understanding Bundles Deployment]({{page page='understanding-bundles-deployment'}}))
-    - Embedded mode (mainly for unit tests, but also used for some client side deployment)
-
-The default Tomcat packaging is actually not a bare Tomcat. The Tomcat that is shipped with Nuxeo contains:
-
-- A JTA Transaction Manager
-- A JCA pool manager
-
-In most of the case, the Nuxeo server is behind a reverse proxy that is used to provide:
-
-- HTTPS/SSL encryption
-- HTTP caching
-- URL rewritting
-
-![]({{file name='reverse.png'}} ?w=500,h=349,border=true)
-
-Additionally, when some clients use a WAN to access the server, the reverse proxy can also be used to protect the server against slow connections that may use server side resources during a long time.
-
-## Storage Alternatives
-
-Nuxeo Platform is pluggable so that it can be adapted to different deployment environments and use cases.
-
-This means you can define _"where you want to manage your data"_ and because the answer may depend on the type of data, Nuxeo Platform provides different types of backend for different types of storage.
-
-### Document Storage
-
-You can configure&nbsp;
-
-- Where you store the Document meta-data and hierarchy
-    - SQL Database (PostgresSQL, Oracle, MSSQL, MySQL, Amazon RDS)
-    - MongoDB
-- Where you store the binary streams (the files you attach to documents)
-    - Simple FileSystem
-    - SQL Database
-    - S3, Azure
-    - Leveraging Content Delivery Networks for caching content securely all around the globe.
-
-<div class="table-scroll"><table class="hover"><tbody><tr><td colspan="1">![]({{file name='VCS1.png'}} ?w=200,thumbnail=true)</td><td colspan="1">![]({{file name='VCS2.png'}} ?w=200,thumbnail=true)</td><td colspan="1">![]({{file name='DBS.png'}} ?w=200,h=317)</td></tr><tr><td colspan="1">**_PosgreSQL + FileSystem_**</td><td colspan="1">_**Oracle + S3**_</td><td colspan="1">_**MongoDB + S3**_</td></tr></tbody></table></div>
-
-&nbsp;
-
-### Indexes
-
-You can also select where you store the indexes (including the full-text)
-
-- SQL Database
-- Elasticsearch
-
-![]({{file name='ES-Single.png'}} ?w=300,h=213,border=true)
-
-Since 6.0, the default configuration uses Elasticsearch.
-
-### Others&nbsp;
-
-In the same logic, you can choose:
-
-- Where you store the caches and the transient data
-
-    - In Memory (per instance basis)
-    - Redis (shared memory)
-- Where you store&nbsp;[Users and Groups]({{page page='data-lists-and-directories'}})
-    - SQL Database
-    - LDAP
-    - Mix of both
-    - External system
+We will cover some architecture options to answer these constraints below.
 
 ## Scalability and High Availability
 
