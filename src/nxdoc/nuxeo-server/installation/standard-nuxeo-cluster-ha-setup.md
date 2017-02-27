@@ -1,6 +1,6 @@
 ---
-title: Standard Nuxeo Cluster With High Availability (HA) Setup
-description: This page details a standard recommended architecture option to deploy a Nuxeo cluster.
+title: Architecture Options For a Nuxeo Cluster
+description: This page covers common architecture options to deploy a Nuxeo cluster.
 review:
     comment: ''
     date: '2017-02-22'
@@ -237,21 +237,25 @@ history:
 
 ---
 {{! excerpt}}
-This page details a standard recommended architecture option to deploy a Nuxeo cluster answering to the high availability constraint.
+
+This page covers common architecture options to deploy a Nuxeo cluster for production use.
+
 {{! /excerpt}}
 
 Setting up a Nuxeo cluster consists in answering to three main constraint types, independently or in combination with the others:
-1. **Scalability**<br/> my setup has to scale easily without sacrificing performances to adapt to a varying load.
-1. **Failover**<br/> when something goes wrong, I should be able to restore service quickly, losing as little data as possible in the process.
-1. **High Availability**<br/> my service should always be available, no matter what happens.
+- Scalability: my setup has to scale easily without sacrificing performances to adapt to a varying load.
+- Failover: when something goes wrong, I should be able to restore service quickly, losing as little data as possible in the process.
+- High Availability: my service should always be available, no matter what happens.
 
-We will cover a standard architecture option to answer the high availability constraint below.
+We will cover some architecture options to answer these constraints below.
 
-## High Availability
+## Scalability and High Availability
 
-In order to manage scale out and provide HA, Nuxeo server provides a simple clustering solution.
+### Cluster HA
 
-When cluster mode is enabled, you can have several Nuxeo server nodes connected to the same database server: you can then simply add more Nuxeo server nodes if you need to serve more requests.
+In order to manage scale out and HA, the Nuxeo Platform provides a simple clustering solution.
+
+When cluster mode is enabled, you can have several Nuxeo Platform nodes connected to the same database server: you can then simply add more Nuxeo Server if you need to serve more requests.
 
 Nuxeo Repository cluster mode manages the required cache invalidation between the nodes. There is no need to activate any application server level cluster mode: cluster mode works even without application server.
 
@@ -271,7 +275,7 @@ Anyway, even with JSF:
 
 When running in Cluster mode, the usage of Redis is strongly recommended since it allows to:
 
-- Share caches between the nodes
+- Share caches between the nodes&nbsp;
     - Making the caches more efficient
     - Avoiding invalidation issues
 - Share the [Work]({{page page='work-and-workmanager'}}) queues (all the asynchronous jobs that have been scheduled)

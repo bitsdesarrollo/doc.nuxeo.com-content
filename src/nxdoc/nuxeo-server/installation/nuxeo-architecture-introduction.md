@@ -1,6 +1,6 @@
 ---
-title: Architecture Options For a Single Nuxeo Node
-description: This page covers common architecture aspects to deploy a single Nuxeo node for production use.
+title: Nuxeo Architecture Introduction
+description: This page covers the elements that can be included in a production ready Nuxeo architecture.
 labels:
     - deployment
     - architecture
@@ -14,24 +14,28 @@ tree_item_index: 90
 
 {{! excerpt}}
 
-This page covers common architecture aspects to deploy a single Nuxeo node for production use.
+This page covers the elements that can be included in a production ready Nuxeo architecture.
 
 {{! /excerpt}}
 
-Deploying a single Nuxeo node mainly consists in having:
-- A reverse proxy
-- A Nuxeo server
-- A database Nuxeo can connect to
-- An Elasticsearch cluster (that can very well be a single node, despite the term)
-- A filesystem where binaries will be stored
+A Nuxeo architecture is composed of the following elements:
+- A load balancer,
+- A reverse proxy,
+- A Nuxeo server node or cluster,
+- A database Nuxeo can connect to,
+- An Elasticsearch cluster,
+- A Redis cluster,
+- A filesystem where binaries will be stored.
 
-![]({{file name='nuxeo-single-node-architecture.png'}} ,border=true)
+We will quickly introduce these items below.
 
-This architecture is a solid foundation that can be kept later on to provide scalability when your userbase and / or content size will grow. We will quickly review these items below.
+## Load Balancer
+
+The load balancer is used to allocate load between the Nuxeo nodes, or potentially to redirect queries to specific nodes. In all cases (even if you use Nuxeo as a bare server without a UI), a load balancer with sticky sessions is mandatory.
 
 ## Reverse Proxy
 
-In the diagram above, reverse proxy is used to avoid users from accessing the Nuxeo server directly. One simple rule you have to follow is that on a production setup, your Nuxeo server should *never* be exposed directly. Setting up a reverse proxy brings many benefits on performance and security aspects:
+A reverse proxy is used to avoid users from accessing the Nuxeo server directly. One simple rule you have to follow is that on a production setup, your Nuxeo server should *never* be exposed directly. Setting up a reverse proxy brings many benefits on performance and security aspects:
 
 - HTTPS/SSL encryption
 - HTTP caching
@@ -39,19 +43,17 @@ In the diagram above, reverse proxy is used to avoid users from accessing the Nu
 
 ![]({{file name='reverse.png'}} ?w=500,h=349,border=true)
 
-Additionally, when some clients use a WAN to access the server, the reverse proxy can also be used to protect the server against slow connections that may use server side resources during a long time. 
-
-You may refer to the [reverse proxy configuration]({{page page='http-and-https-reverse-proxy-configuration'}}) to see how to set it up.
+Additionally, when some clients use a WAN to access the server, the reverse proxy can also be used to protect the server against slow connections that may use server side resources during a long time. You may refer to the [reverse proxy configuration]({{page page='http-and-https-reverse-proxy-configuration'}}) for more details.
 
 ## Nuxeo Server
 
 The Nuxeo server can be installed in a variety of ways, including a docker container, a VM image, a debian repository, or a simple cross-platform zip file. It is distributed in a prepackaged Tomcat server that includes Nuxeo, a transaction manager (JTA), a pool manager (JCA). The WAR file is generated dynamically upon each Nuxeo server restart, allowing easy configuration changes and customization deployment. Further information on this subject can be found in the [Understanding Bundles Deployment]({{page page='understanding-bundles-deployment'}}) documentation.
 
-The Nuxeo server can be deployed anywhere, including in tablets. Having a lightweight embedded Nuxeo server is a solution commonly used for unit testing or offline access. For the latter, the Nuxeo server would be embedded client side (for instance in a tablet) to allow offline access, and would synchronize with a central Nuxeo server when going back online.
+The Nuxeo server can be deployed anywhere, including as an embedded tool. Having a lightweight embedded Nuxeo server is a solution commonly used for unit testing or offline access. For the latter, the Nuxeo server would be embedded client side (for instance in a tablet) to allow offline access, and would synchronize with a central Nuxeo server when going back online.
 
 ## Database
 
-Database remains a core component for your Nuxeo infrastructure, since it will hold for instance all document properties. Nuxeo supports many databases ;  among them, MongoDB and PostgreSQL are the ones that are known to provide the best overall performances currently. Please refer to our [database configuration]({{page page='database-configuration'}}) documentation for further details.
+The database is a core component for your Nuxeo infrastructure, since it will hold for instance all document properties. Nuxeo supports many databases ;  among them, MongoDB and PostgreSQL are the ones that are known to provide the best overall performances currently. Please refer to our [database configuration]({{page page='database-configuration'}}) documentation for further details.
 
 {{#> callout type='info'}}
 When choosing MongoDB, a relational database (e.g. PostgreSQL, Oracle...) is still needed for now. Using MongoDB as the only database in your infrastructure is a work in progress that will be supported in Nuxeo LTS 2016 and above through optional addons.
@@ -59,12 +61,18 @@ When choosing MongoDB, a relational database (e.g. PostgreSQL, Oracle...) is sti
 
 ## Elasticsearch
 
-Elasticsearch is a component used to relieve the database from the costliest operations. 
+Elasticsearch is used to relieve the database from the costliest operations. 
 - It keeps indexes on the documents in order to allow blazingly fast searches and modern search options like real time filtering (aka facets), even on very high volumes.
 - It stores the documents audit log. Since every operation on a document in Nuxeo is stored for possible audit purpose, the corresponding table would grow very rapidly and possibly reach millions of tuples when stored in the database. Using Elasticsearch, this is not a problem anymore.
 - It scales horizontally and provides constant performance even with growing content size.
 
-Elasticsearch remains an optional component and can be deactivated if needed. But except for some specific use cases where installation size and setup steps highly matter (for instance when embedding a Nuxeo server), it is highly recommended to leverage it. Refer to the [Elasticsearch setup]({{page page='elasticsearch-setup'}}) documentation for more information.
+Elasticsearch remains an optional component and can be deactivated if needed. But except for some specific use cases where installation size and setup steps highly matter (for instance when embedding a Nuxeo server), it is highly recommended to take advantage of it. Refer to the [Elasticsearch setup]({{page page='elasticsearch-setup'}}) documentation for more information.
+
+## Redis
+
+Redis is used to persist any asynchronous job created by the Nuxeo server nodes. Fulltext content extraction from files, thumbnail generation, metadata extraction or write for pictures, video conversion tasks are all examples of such jobs. When a Redis instance or cluster is set up, you can safely stop your Nuxeo server nodes anytime without being worried of losing these jobs in the process.
+
+Redis can also serve as a centralized caching tool, allowing to share cache between Nuxeo nodes for various data sources. You may refer to the [Nuxeo and Redis]({{page page='nuxeo-and-redis'}}) page for all details.
 
 ## FileSystem
 
@@ -140,7 +148,3 @@ In the same logic, you can choose:
     - LDAP or Active Directory
     - Mix of both
     - External system
-
-## Notes About This Architecture
-
-The diagram presented on top of this page should be considered a starting point: 
