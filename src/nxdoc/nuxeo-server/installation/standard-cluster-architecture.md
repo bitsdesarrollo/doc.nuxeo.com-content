@@ -1,6 +1,6 @@
 ---
-title: Architecture Options For a Nuxeo Cluster
-description: This page covers common architecture options to deploy a Nuxeo cluster.
+title: Standard Nuxeo Cluster Architecture
+description: This page details standard architecture options to deploy a Nuxeo cluster.
 review:
     comment: ''
     date: '2017-02-22'
@@ -237,29 +237,61 @@ history:
 
 ---
 {{! excerpt}}
-
-This page covers common architecture options to deploy a Nuxeo cluster for production use.
-
+This page details standard architecture options to deploy a Nuxeo cluster.
 {{! /excerpt}}
 
 Setting up a Nuxeo cluster consists in answering to three main constraint types, independently or in combination with the others:
-- Scalability: my setup has to scale easily without sacrificing performances to adapt to a varying load.
-- Failover: when something goes wrong, I should be able to restore service quickly, losing as little data as possible in the process.
-- High Availability: my service should always be available, no matter what happens.
+1. **Scalability** - My setup has to scale easily without sacrificing performances to adapt to a varying load.
+1. **Failover** - When something goes wrong, I should be able to restore service quickly, losing as little data as possible in the process.
+1. **High Availability** - My service should always be available, no matter what happens.
 
-We will cover some architecture options to answer these constraints below.
+## Cluster Basics
 
-## Scalability and High Availability
+In order to scale out and provide high availability (HA), Nuxeo provides a simple clustering solution. When cluster mode is enabled, you can have several Nuxeo server nodes connected to the same database server: you can then simply add more Nuxeo server nodes if you need to serve more requests. 
 
-### Cluster HA
+Nuxeo cluster mode also manages the required cache invalidation between the nodes. There is no need to activate any application server level cluster mode: cluster mode works without a dedicated application server. The default caching implementation uses simple JVM Memory, but we recommend using Redis to better handle cache invalidation.
 
-In order to manage scale out and HA, the Nuxeo Platform provides a simple clustering solution.
+Two deployment architectures will be detailed below: a compact deployment option that will be particularly interesting for on premise deployment where the number of machines could quickly become an issue, and a cloud based deployment using containers where scalability matters most.
 
-When cluster mode is enabled, you can have several Nuxeo Platform nodes connected to the same database server: you can then simply add more Nuxeo Server if you need to serve more requests.
+## Compact Deployment
 
-Nuxeo Repository cluster mode manages the required cache invalidation between the nodes. There is no need to activate any application server level cluster mode: cluster mode works even without application server.
+The compact deployment architecture is well suited for on premise deployment. The number of machines to install is low and their installation can be automated easily, ensuring scalability when needed.
 
-The default caching implementation uses simple JVM Memory, but we also have alternate implementation for specific use cases.
+![]({{file name='compact-deployment-numbered.png'}} ?w=1180,h=786,thumbnail=true,border=true)
+
+In this architecture:
+1. A load balancer with sticky sessions is used, as well as a reverse proxy.
+2. A total of three machines are prepared for the application cluster. Each machine holds a Nuxeo server node, and an Elasticsearch node. More machines can be added later for scalability purpose.
+
+{{#> callout type='info' heading='Number of Machines'}}
+In this setup, **you always need to have an odd number of machines** (3, 5, 7...). This is tied to the fact Elasticsearch always needs to have an odd number of nodes in order to safely handle failover when a network partioning error occurs. Imagine that your cluster gets cut in half: 2 nodes on side A cannot communicate anymore with the third node on side B. In this situation, if the master node is the one isolated on side B, failover can be achieved properly because a majority (the 2 nodes on side A) can elect a new master node between them and keep service available. If you had 4 nodes in the same situation, service wouldn't be available anymore because a majority could not be obtained when voting. This is known as the split-brain problem. This also means that the minimum number of nodes to obtain high availability is of 3.
+{{/callout}}
+
+3. The machines described at step will all connect to the same database server.
+4. A single Redis node is used.
+5. File storage is done on a replicated filesystem.
+
+### Limitations
+#### Potential Single Point of Failures
+Two potential single point of failures exist in this architecture: the Redis server and the database server.
+
+##### Database Server
+The database server is the most impacting of the two, as having it fail means not being able to store or retrieve documents anymore. To prevent the database server from becoming a single point of failure, you have several options:
+
+- Use database replication
+- Use a clusterized database (like Oracle RAC)
+- Use a distributed / failsafe database like MongoDB
+
+##### Redis Server
+Redis server is known to be very resilient, and is less impacting when failing ; this is why we considered deploying it as a single node in our architecture schema. If it ever fails, consequences will be rather low as it mainly stores transient data, but you would still lose pending asynchronous jobs in the process. Losing these jobs will result in a loss of features in the application, but will not prevent it from working overall.
+
+Depending on the importance of these jobs in your application (for instance, they could be considered mission critical in a DAM application), you have options to provide high availability using Redis:
+
+- Use Redis with <a href="https://redis.io/topics/sentinel" target="_blank">Sentinel</a>: in this case, you will need at least 3 Redis nodes to prevent the split-brain problem.
+- Use Redis Entreprise Solution.
+
+#### Disk Becomes the Main Bottleneck
+Since Nuxeo server nodes are installed on the same machine as Elasticsearch nodes, disk access may quickly become a bottleneck in terms of performances.
 
 Depending on the UI framework used for presentation layer, the network load balancing may need to be stateful.
 
@@ -272,23 +304,6 @@ Anyway, even with JSF:
 
 - Authentication can be transparent if you use a SSO system,
 - The Nuxeo Platform knows how to restore a JSF view from a URL (most Nuxeo JSF views are bound to REST URLs).
-
-When running in Cluster mode, the usage of Redis is strongly recommended since it allows to:
-
-- Share caches between the nodes&nbsp;
-    - Making the caches more efficient
-    - Avoiding invalidation issues
-- Share the [Work]({{page page='work-and-workmanager'}}) queues (all the asynchronous jobs that have been scheduled)
-
-![]({{file name='Cluster-Redis.png'}} ?w=500,h=317,border=true)
-
-In this architecture the Database server is still a Single Point of Failure.
-
-To correct that, you have several options:
-
-- Use Nuxeo Clustering + Database replication as described below
-- Use Nuxeo Clustering + a Clusterized database (like Oracle RAC)
-- Use Nuxeo Clustering + a distributed/failsafe Database like MongoDB
 
 {{#> callout type='tip' }}
 For more information, please see the page [Setting up a HA Configuration Using the Nuxeo Platform and PostgreSQL]({{page page='setting-up-a-ha-configuration-using-the-nuxeo-platform-and-postgresql'}}).

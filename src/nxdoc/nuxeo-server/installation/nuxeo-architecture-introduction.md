@@ -53,7 +53,7 @@ The Nuxeo server can be deployed anywhere, including as an embedded tool. Having
 
 ## Database
 
-The database is a core component for your Nuxeo infrastructure, since it will hold for instance all document properties. Nuxeo supports many databases ;  among them, MongoDB and PostgreSQL are the ones that are known to provide the best overall performances currently. Please refer to our [database configuration]({{page page='database-configuration'}}) documentation for further details.
+The database is a core component for your Nuxeo infrastructure, since it will store all document properties, and will be used as well for various queries. Nuxeo supports many databases ;  among them, MongoDB and PostgreSQL are the ones that are considered to provide the best overall performances currently for Nuxeo usage. Please refer to our [database configuration]({{page page='database-configuration'}}) documentation for further details.
 
 {{#> callout type='info'}}
 When choosing MongoDB, a relational database (e.g. PostgreSQL, Oracle...) is still needed for now. Using MongoDB as the only database in your infrastructure is a work in progress that will be supported in Nuxeo LTS 2016 and above through optional addons.
@@ -70,9 +70,9 @@ Elasticsearch remains an optional component and can be deactivated if needed. Bu
 
 ## Redis
 
-Redis is used to persist any asynchronous job created by the Nuxeo server nodes. Fulltext content extraction from files, thumbnail generation, metadata extraction or write for pictures, video conversion tasks are all examples of such jobs. When a Redis instance or cluster is set up, you can safely stop your Nuxeo server nodes anytime without being worried of losing these jobs in the process.
+Redis is an optional but strongly recommended component for any Nuxeo cluster. It is mainly used to persist any [asynchronous job]({{page page='work-and-workmanager'}}) created by the Nuxeo server nodes. Fulltext content extraction from files, thumbnail generation, metadata extraction or write for pictures, video conversion tasks are all examples of such jobs. When a Redis instance or cluster is set up, you can safely stop your Nuxeo server nodes anytime without being worried of losing these jobs in the process.
 
-Redis can also serve as a centralized caching tool, allowing to share cache between Nuxeo nodes for various data sources. You may refer to the [Nuxeo and Redis]({{page page='nuxeo-and-redis'}}) page for all details.
+Redis can also serve as a centralized caching tool, allowing to share cache between Nuxeo nodes for various data sources and thus preventing invalidation issues. You may refer to the [Nuxeo and Redis]({{page page='nuxeo-and-redis'}}) page for all details.
 
 ## FileSystem
 
