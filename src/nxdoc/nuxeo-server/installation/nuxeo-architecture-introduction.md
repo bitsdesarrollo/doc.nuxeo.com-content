@@ -18,6 +18,8 @@ This page covers the elements that can be included in a production ready Nuxeo a
 
 {{! /excerpt}}
 
+![]({{file name='../standard-cluster-architecture/nuxeo-cluster-logical-architecture.png'}} ?border=true)
+
 A Nuxeo architecture is composed of the following elements:
 - A load balancer,
 - A reverse proxy,
@@ -74,9 +76,9 @@ Redis is an optional but strongly recommended component for any Nuxeo cluster. I
 
 Redis can also serve as a centralized caching tool, allowing to share cache between Nuxeo nodes for various data sources and thus preventing invalidation issues. You may refer to the [Nuxeo and Redis]({{page page='nuxeo-and-redis'}}) page for all details.
 
-## FileSystem
+## File System
 
-Nuxeo stores binaries attached to the documents on a filesystem by default, that can be a shared filesystem, a NAS... more options are available depending on your target deployment. This is described in the [Storage Alternatives](#storage-alternatives) section below.
+Nuxeo stores binaries attached to the documents on a file system by default, that can be a shared file system, a NAS, an Amazon S3 bucket, etc. More options are available depending on your target deployment. This is described in the [Storage Alternatives](#storage-alternatives) section below.
 
 ## Storage Alternatives
 

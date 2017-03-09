@@ -251,7 +251,34 @@ In order to scale out and provide high availability (HA), Nuxeo provides a simpl
 
 Nuxeo cluster mode also manages the required cache invalidation between the nodes. There is no need to activate any application server level cluster mode: cluster mode works without a dedicated application server. The default caching implementation uses simple JVM Memory, but we recommend using Redis to better handle cache invalidation.
 
-Two deployment architectures will be detailed below: a compact deployment option that will be particularly interesting for on premise deployment where the number of machines could quickly become an issue, and a cloud based deployment using containers where scalability matters most.
+Several architecture diagrams will be detailed below: 
+- a logical architecture diagram to explain the recommended architecture with all components,
+- an HA architecture diagram to see how you could translate the logical architecture for a physical deployment,
+- a compact deployment option that will be particularly interesting where the number of machines could quickly become an issue.
+
+## Logical Architecture
+
+![]({{file name='nuxeo-cluster-logical-architecture.png'}} ?border=true)
+
+This diagram represents the recommended architecture for a Nuxeo cluster.
+- Two load balancers in front with sticky sessions handle incoming requests and direct them to the appropriate Nuxeo server nodes.
+- Each Nuxeo server node is protected by a reverse proxy (usually Apache or Nginx).
+- At least two Nuxeo server nodes are available. You can add any number of nodes to scale out performances.
+- At least three nodes are available for the Elasticsearch cluster. Same for Redis. Contrarily to Nuxeo server nodes, these two components always require an odd number of nodes, which means you need to add at least two when wishing to scale out performances.
+- Database system should provide high availability. Each solution has its own options for this, therefore we can't go into further details here.
+- A shared file system is used to store binary files.
+
+### Deployment Options
+#### Cloud Based Deployment
+This diagram translates perfectly on a cloud based deployment. Considering Amazon AWS as a possible cloud infrastructure provider:
+- The AWS ELB would be used for load balancing.
+- EC2 instances can be used for the Nuxeo server nodes. We provide a [Nuxeo server CloudFormation template]({{page page='deploying-nuxeo-on-amazon-aws'}}) to help in that regard.
+- EC2 instances can be used for Elasticsearch cluster nodes too. The Amazon ElasticCache service does not provide the required APIs at this point to allow us to have a completely managed cluster.
+- Amazon ElasticCache can be used for a managed Redis cluster. Another option is to have a cluster hosted and managed by RedisLabs.
+- Database can be handled through Amazon RDS. MongoDB Atlas is also an option for a hosted MongoDB cluster.
+- An Amazon S3 bucket can be used for replicated file storage.
+
+## High Availability Architecture
 
 ## Compact Deployment
 
@@ -283,9 +310,11 @@ The database server is the most impacting of the two, as having it fail means no
 - Use a distributed / failsafe database like MongoDB
 
 ##### Redis Server
-Redis server is known to be very resilient, and is less impacting when failing ; this is why we considered deploying it as a single node in our architecture schema. If it ever fails, consequences will be rather low as it mainly stores transient data, but you would still lose pending asynchronous jobs in the process. Losing these jobs will result in a loss of features in the application, but will not prevent it from working overall.
+Redis server is known to be very resilient, and is less impacting when failing ; this is why we considered deploying it as a single node in our architecture schema. If it ever fails, consequences will be rather low as it mainly stores transient data, but you would still lose pending asynchronous jobs in the process. Losing these jobs will result in a loss of features in the application, but will not prevent it from working overall. 
 
 Depending on the importance of these jobs in your application (for instance, they could be considered mission critical in a DAM application), you have options to provide high availability using Redis:
+
+//TODO determine what we want to recommend exactly for persistence, see https://redis.io/topics/persistence
 
 - Use Redis with <a href="https://redis.io/topics/sentinel" target="_blank">Sentinel</a>: in this case, you will need at least 3 Redis nodes to prevent the split-brain problem.
 - Use Redis Entreprise Solution.
