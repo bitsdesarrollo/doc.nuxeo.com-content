@@ -269,8 +269,7 @@ This diagram represents the recommended architecture for a Nuxeo cluster.
 - A shared file system is used to store binary files.
 
 ### Deployment Options
-#### Cloud Based Deployment
-This diagram translates perfectly on a cloud based deployment. Considering Amazon AWS as a possible cloud infrastructure provider:
+This diagram translates perfectly for a cloud based deployment. Considering Amazon AWS as a possible cloud infrastructure provider:
 - The AWS ELB would be used for load balancing.
 - EC2 instances can be used for the Nuxeo server nodes. We provide a [Nuxeo server CloudFormation template]({{page page='deploying-nuxeo-on-amazon-aws'}}) to help in that regard.
 - EC2 instances can be used for Elasticsearch cluster nodes too. The Amazon ElasticCache service does not provide the required APIs at this point to allow us to have a completely managed cluster.
@@ -279,6 +278,16 @@ This diagram translates perfectly on a cloud based deployment. Considering Amazo
 - An Amazon S3 bucket can be used for replicated file storage.
 
 ## High Availability Architecture
+
+![]({{file name='nuxeo-cluster-ha-architecture.png'}} ?border=true)
+
+This diagram shows how the logical architecture can translate in terms of physical deployment and installation sharing.
+- The load balancers are usually deployed on separate machines from where the Nuxeo server nodes will be, as otherwise stopping a Nuxeo node could have consequences on serving the requests.
+- On the machines where Nuxeo server nodes will be installed, a reverse proxy can be installed as well. It is lightweight, and having a reverse proxy for each Nuxeo node makes sense: if it fails for some reason, only the Nuxeo node behind it will be affected.
+- Redis can also be installed on the same physical machine as Nuxeo server: our Redis usage is usually low enough for that.
+- Elasticsearch nodes have to be installed on dedicated machines: for performance reasons Elasticsearch
+
+### Deployment Options
 
 ## Compact Deployment
 

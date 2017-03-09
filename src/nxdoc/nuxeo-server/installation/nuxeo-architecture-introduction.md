@@ -1,6 +1,6 @@
 ---
-title: Nuxeo Architecture Introduction
-description: This page covers the elements that can be included in a production ready Nuxeo architecture.
+title: Nuxeo Cluster Architecture Introduction
+description: This page covers the elements that can be included in a production ready Nuxeo cluster architecture.
 labels:
     - deployment
     - architecture
@@ -14,26 +14,48 @@ tree_item_index: 90
 
 {{! excerpt}}
 
-This page covers the elements that can be included in a production ready Nuxeo architecture.
+This page covers the principles and elements that can be included in a production ready Nuxeo cluster architecture.
 
 {{! /excerpt}}
 
-![]({{file name='../standard-cluster-architecture/nuxeo-cluster-logical-architecture.png'}} ?border=true)
+## Cluster Basics
+Setting up a Nuxeo cluster consists in answering to three main constraint types, independently or in combination with the others:
+1. **Scalability** - My setup has to scale easily without sacrificing performances to adapt to a varying load.
+1. **Failover** - When something goes wrong, I should be able to restore service quickly, losing as little data as possible in the process.
+1. **High Availability** - My service should always be available, no matter what happens.
 
-A Nuxeo architecture is composed of the following elements:
-- A load balancer,
-- A reverse proxy,
-- A Nuxeo server node or cluster,
-- A database Nuxeo can connect to,
+In order to scale out and provide high availability (HA), Nuxeo provides a simple clustering solution. When cluster mode is enabled, you can have several Nuxeo server nodes connected to the same components, and you can then simply add more Nuxeo server nodes if you need to serve more requests.
+
+This diagram represents the recommended architecture for a Nuxeo cluster. It is composed of the following elements:
+
+![]({{file name='nuxeo-cluster-logical-architecture.png'}} ?border=true)
+
+- Load balancers,
+- Reverse proxies,
+- A Nuxeo server cluster,
+- A database cluster Nuxeo can connect to,
 - An Elasticsearch cluster,
 - A Redis cluster,
-- A filesystem where binaries will be stored.
+- A file system where binaries will be stored.
 
-We will quickly introduce these items below.
+We will explain the role of each component below.
 
-## Load Balancer
+- Two load balancers in front with sticky sessions handle incoming requests and direct them to the appropriate Nuxeo server nodes.
+- Each Nuxeo server node is protected by a reverse proxy (usually Apache or Nginx).
+- At least two Nuxeo server nodes are available. You can add any number of nodes to scale out performances.
+- At least three nodes are available for the Elasticsearch cluster. Same for Redis. Contrarily to Nuxeo server nodes, these two components always require an odd number of nodes, which means you need to add at least two when wishing to scale out performances.
+- Database system should provide high availability. Each solution has its own options for this, therefore we can't go into further details here.
+- A shared file system is used to store binary files.
 
-The load balancer is used to allocate load between the Nuxeo nodes, or potentially to redirect queries to specific nodes. In all cases (even if you use Nuxeo as a bare server without a UI), a load balancer with sticky sessions is mandatory.
+## Load Balancers
+
+The load balancers are used to allocate load between the Nuxeo nodes. They can possibly be configured to redirect some particular queries to specific nodes. The latter can be interesting in some use cases: 
+- When using Nuxeo Drive to make sure that even during an unexpected activity peak only specific nodes can possibly slow down, while keeping usual performances for the other activities.
+- When having different hardware with nodes dedicated to heavy processing like video conversion. 
+
+In all cases (even if you use Nuxeo as a bare server without a UI), a load balancer with sticky sessions is mandatory.
+
+For high availability, two load balancers are necessary.
 
 ## Reverse Proxy
 
@@ -49,13 +71,15 @@ Additionally, when some clients use a WAN to access the server, the reverse prox
 
 ## Nuxeo Server
 
-The Nuxeo server can be installed in a variety of ways, including a docker container, a VM image, a debian repository, or a simple cross-platform zip file. It is distributed in a prepackaged Tomcat server that includes Nuxeo, a transaction manager (JTA), a pool manager (JCA). The WAR file is generated dynamically upon each Nuxeo server restart, allowing easy configuration changes and customization deployment. Further information on this subject can be found in the [Understanding Bundles Deployment]({{page page='understanding-bundles-deployment'}}) documentation.
+Nuxeo server can be installed in a variety of ways, including a docker container, a VM image, a debian repository, or a simple cross-platform zip file. It is distributed in a prepackaged Tomcat server that includes Nuxeo, a transaction manager (JTA), a pool manager (JCA). The WAR file is generated dynamically upon each Nuxeo server restart, allowing easy configuration changes and customization deployment. Further information on this subject can be found in the [Understanding Bundles Deployment]({{page page='understanding-bundles-deployment'}}) documentation.
 
-The Nuxeo server can be deployed anywhere, including as an embedded tool. Having a lightweight embedded Nuxeo server is a solution commonly used for unit testing or offline access. For the latter, the Nuxeo server would be embedded client side (for instance in a tablet) to allow offline access, and would synchronize with a central Nuxeo server when going back online.
+Nuxeo server can be deployed anywhere, including as an embedded tool. Having a lightweight embedded Nuxeo server is a solution commonly used for unit testing or offline access. For the latter, the Nuxeo server would be embedded client side (for instance in a tablet) to allow offline access, and would synchronize with a central Nuxeo server when going back online.
 
 ## Database
 
-The database is a core component for your Nuxeo infrastructure, since it will store all document properties, and will be used as well for various queries. Nuxeo supports many databases ;  among them, MongoDB and PostgreSQL are the ones that are considered to provide the best overall performances currently for Nuxeo usage. Please refer to our [database configuration]({{page page='database-configuration'}}) documentation for further details.
+The database is a core component for your Nuxeo cluster infrastructure, since it will store the document hierarchy, all document properties, and will be used as well for various queries. Nuxeo supports many databases, both NoSQL and relational ones. Among them, MongoDB and PostgreSQL are the ones that provide the best overall performances currently for Nuxeo usage. 
+
+Each database has its own solutions for high availability, therefore we may not recommend a specific option here. You may however refer to our [database configuration]({{page page='database-configuration'}}) documentation for further details.
 
 {{#> callout type='info'}}
 When choosing MongoDB, a relational database (e.g. PostgreSQL, Oracle...) is still needed for now. Using MongoDB as the only database in your infrastructure is a work in progress that will be supported in Nuxeo LTS 2016 and above through optional addons.
