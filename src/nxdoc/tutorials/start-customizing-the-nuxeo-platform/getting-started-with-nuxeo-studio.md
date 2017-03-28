@@ -2,7 +2,7 @@
 title: Getting Started with Nuxeo Studio
 review:
     comment: ''
-    date: '2017-02-13'
+    date: '2017-03-28'
     status: ok
 details:
     howto:
@@ -176,79 +176,33 @@ The Nuxeo Platform is available in different packages. Here we will use the ZIP 
 Installing the Nuxeo Platform using the [`.zip` package](http://www.nuxeo.com/downloads/) installs the Nuxeo Platform only. External dependencies must be [installed separately]({{page page='installing-and-setting-up-related-software'}}).
 
 **To install and start the Nuxeo Platform ZIP archive:**
-<div class="table-scroll">
-  <table class="hover">
-    <tbody>
-      <tr>
-        <td>**1**</td>
-        <td>Unzip the `.zip` archive using your favorite tool.</td>
-      </tr>
-      <tr>
-        <td>**2**</td>
-        <td>
-          To start the Nuxeo Server:<br />
-          **MAC OS**: Double-click on the `Start Nuxeo.command` file.<br />
-          **Windows**: Double-click on the `Start Nuxeo.bat` file.<br />
-          **Linux**: <pre style="max-width: 700px">chmod +x ./bin/nuxeoctl
-./bin/nuxeoctl start --gui</pre>
-        </td>
-      </tr>
-      <tr>
-        <td>**3**</td>
-        <td>In a browser, go to [http://localhost:8080/nuxeo](http://localhost:8080/nuxeo).</td>
-      </tr>
-      <tr>
-        <td>**4**</td>
-        <td>Fill in the information in the configuration wizard steps.</td>
-      </tr>
-      <tr>
-        <td>**5**</td>
-        <td>
-          At the **Nuxeo Online Services** step, provide your Nuxeo Online Services credentials. If you don't have an account, you can register for a free 30-day trial offer:<br />
-          <ul>
-            <li>Provide a valid email address</li>
-            <li>Click on the confirmation link sent to the email address you provided</li>
-            <li>Your Online Trial account should now be created</li>
-          </ul>
-        </td>
-      </tr>
-      <tr>
-        <td>**6**</td>
-        <td>At the **Modules** step, select Nuxeo JSF UI.</td>
-      </tr>
-      <tr>
-        <td>**7**</td>
-        <td>Click on **Start** at the final step. Your application is ready to use.</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+
+1.  Unzip the `.zip` archive using your favorite tool.
+2.  To start the Nuxeo Server:
+      **MAC OS**: Double-click on the `Start Nuxeo.command` file.
+      **Windows**: Double-click on the `Start Nuxeo.bat` file.
+      **Linux**:
+      ```bash
+      chmod +x ./bin/nuxeoctl
+      ./bin/nuxeoctl start --gui
+      ```
+3.  In a browser, go to [http://localhost:8080/nuxeo](http://localhost:8080/nuxeo).
+4.  Fill in the information in the configuration wizard steps.
+5.  At the **Nuxeo Online Services** step, provide your Nuxeo Online Services credentials. If you don't have an account, you can register for a free 30-day trial offer:
+  - Provide a valid email address
+  - Click on the confirmation link sent to the email address you provided
+  - Your Online Trial account should now be created
+6.  At the **Modules** step, select Nuxeo JSF UI.
+7.  Click on **Start** at the final step. Your application is ready to use.
 
 Activate development mode to avoid having to package and deploy your application whenever you want to visualize your changes from Nuxeo Studio. This way you only need to hot reload from the Update Center or the [**Nuxeo Dev Tools** extension](https://doc.nuxeo.com/nxdoc/nuxeo-dev-tools-extension/).
 
 **To activate development mode:**
-<div class="table-scroll">
-  <table class="hover">
-    <tbody>
-      <tr>
-        <td>**1**</td>
-        <td>When the application has started, log in with Administrator/Administrator credentials.</td>
-      </tr>
-      <tr>
-        <td>**2**</td>
-        <td>Click on **ADMIN** > **Update Center**. The Nuxeo Studio tab is displayed.</td>
-      </tr>
-      <tr>
-        <td>**3**</td>
-        <td>Click on the **Activate** button to activate development mode.</td>
-      </tr>
-      <tr>
-        <td>**4**</td>
-        <td>Click on the **Restart Server** button displayed on top of the Admin Center.</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+
+1.  When the application has started, log in with Administrator/Administrator credentials.
+2.  Click on **ADMIN** > **Update Center**. The Nuxeo Studio tab is displayed.
+3.  Click on the **Activate** button to activate development mode.
+4.  Click on the **Restart Server** button displayed on top of the Admin Center.
 
 You can now access Nuxeo Studio from Online Services by clicking on this link: [connect.nuxeo.com/nuxeo/](https://connect.nuxeo.com/nuxeo/), or from the **Go to Studio** button in  [**Nuxeo Dev Tools**](https://doc.nuxeo.com/nxdoc/nuxeo-dev-tools-extension/) and start customizing your application.
 
@@ -260,78 +214,27 @@ Our firs goal is to change the logo displayed in the banner of the Nuxeo Platfor
 
 **Change the logo:**
 
-<div class="table-scroll">
-  <table class="hover">
-    <tbody>
-      <tr>
-        <td>**1**</td>
-        <td>In Studio's menu, under **Customization**, click on the **Branding** section.</td>
-      </tr>
-      <tr>
-        <td>**2**</td>
-        <td>Click on the **New** button.</td>
-      </tr>
-      <tr>
-        <td>**3**</td>
-        <td>In Feature ID field, type "MyBranding" and click on the **Next** button.</td>
-      </tr>
-      <tr>
-        <td colspan="2">On the **Main Pages** tab:</td>
-      </tr>
-      <tr>
-        <td>**4**</td>
-        <td>Check the box "Set as default branding".</td>
-      </tr>
-      <tr>
-        <td>**5**</td>
-        <td>Click on the **Select Resource** button of the "Logo image" field. A "Select Resource" window pops up. It shows a list of images available by default, imported with the "Default Nuxeo Platform Configuration" template.</td>
-      </tr>
-      <tr>
-        <td>**6**</td>
-        <td>Click on **Choose File** and select an image from your desktop.</td>
-      </tr>
-      <tr>
-        <td>**7**</td>
-        <td>Click on the **Upload** button. The selected image is uploaded to Studio, added to the list of available images and selected.</td>
-      </tr>
-      <tr>
-        <td>**8**</td>
-        <td>Click on the **Ok** button at the bottom of the popup window. The path of the uploaded image is displayed next to the **Select resource** button.</td>
-      </tr>
-      <tr>
-        <td>**9**</td>
-        <td>Click on **Save** at the bottom of the screen.</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+1.  In Studio's menu, under **Customization**, click on the **Branding** section.
+2.  Click on the **New** button.
+3.  In Feature ID field, type "MyBranding" and click on the **Next** button.
+
+On the **Main Pages** tab:
+
+4.  Check the box "Set as default branding".
+5.  Click on the **Select Resource** button of the "Logo image" field. A "Select Resource" window pops up. It shows a list of images available by default, imported with the "Default Nuxeo Platform Configuration" template.
+6.  Click on **Choose File** and select an image from your desktop.
+7.  Click on the **Upload** button. The selected image is uploaded to Studio, added to the list of available images and selected.
+8.  Click on the **Ok** button at the bottom of the popup window. The path of the uploaded image is displayed next to the **Select resource** button.
+9.  Click on **Save** at the bottom of the screen.
 
 ### Deploying Changes on Your Nuxeo Platform Instance
 
 In [**Nuxeo Dev Tools**](https://doc.nuxeo.com/nxdoc/nuxeo-dev-tools-extension/) extension, simply click on the **Hot Reload** button. Otherwise...
 
-<div class="table-scroll">
-  <table class="hover">
-    <tbody>
-      <tr>
-        <td>**1**</td>
-        <td>Go to your Nuxeo Platform instance, typically available at [http://localhost:8080/nuxeo](http://localhost:8080/nuxeo).</td>
-      </tr>
-      <tr>
-        <td>**2**</td>
-        <td>Connect with login/password Administrator/Administrator.</td>
-      </tr>
-      <tr>
-        <td>**3**</td>
-        <td>Click on **ADMIN** > **Update Center** > **Nuxeo Studio**.</td>
-      </tr>
-      <tr>
-        <td>**4**</td>
-        <td>Click on the **Update** button. Your logo is updated.</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+1.  Go to your Nuxeo Platform instance, typically available at [http://localhost:8080/nuxeo](http://localhost:8080/nuxeo).
+2.  Connect with login/password Administrator/Administrator.
+3.  Click on **ADMIN** > **Update Center** > **Nuxeo Studio**.
+4.  Click on the **Update** button. Your logo is updated.
 
 ## {{> anchor 'contract-doc-type'}}Create a Contract Document Type
 
@@ -339,103 +242,41 @@ Here we want to create a custom document type named "Contract" that will hold sp
 
 ### Studio Customization
 
-<div class="table-scroll">
-  <table class="hover">
-    <tbody>
-      <tr>
-        <td>**1**</td>
-        <td>In Studio's menu, under **Customization**, click on the **Content Model** section, then **Document Types**. Click on the **New** button.</td>
-      </tr>
-      <tr>
-        <td>**2**</td>
-        <td>
-          Fill in the creation form as follows and click on **Next**:<br />
-          <ul>
-            <li>**ID**: Contract</li>
-            <li>**Extends**: File</li>
-            <li>**Label**: Contract</li>
-            <li>**Description**: Contract document type for internal use.</li>
-          </ul>
-            Your document type is created.
-        </td>
-      </tr>
-      <tr>
-        <td>**3**</td>
-        <td>Fill in the [**Definition** tab]({{page space='studio' page='documents'}}):
-            ![]({{file name='definition_contract.png'}} ?w=600,h=365,border=true)</td>
-      </tr>
-      <tr>
-        <td>**4**</td>
-        <td>Fill in the [**Schema** tab]({{page space='studio' page='schemas'}}) with the following metadata:
-            ![]({{file name='schema_contract.png'}} ?w=600,border=true)</td>
-      </tr>
-      <tr>
-        <td colspan="2">
-          Now we'll customize the form that's used to **create** the document. On the **Creation Layout** tab:
-        </td>
-      </tr>
-      <tr>
-        <td>**5**</td>
-        <td>Click on the ![]({{file name='delete.gif' space='studio' page='studio-icons-index'}}) icon to remove the WARNING and Description widgets.</td>
-      </tr>
-      <tr>
-        <td>**6**</td>
-        <td>Drag and drop the fields **Owner**, **Start** and **Policy** from the schema **Contract** to the grid.</td>
-      </tr>
-      <tr>
-        <td>**7**</td>
-        <td>Click on&nbsp;![]({{file name='editor_area.gif' space='studio' page='studio-icons-index'}}) if you wish to edit a label, then click on **Save** in the popup when you're done.</td>
-      </tr>
-      <tr>
-        <td colspan="2" align="center">
-          ![]({{file name='creation_layout_contract.png'}} ?w=580,border=true)
-          *Creation Layout Tab*
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2">On the **Edit Layout** tab, we can customize the form used to update the metadata of the document:</td>
-      </tr>
-      <tr>
-        <td>**8**</td>
-        <td>Click on the button **Import Layout** and select **Import 'create' layout**.</td>
-      </tr>
-      <tr>
-        <td>**9**</td>
-        <td>Click on the button **Add Row**.</td>
-      </tr>
-      <tr>
-        <td>**10**</td>
-        <td>Drag and drop the field **Reminder** from the schema **Contract** to the grid.</td>
-      </tr>
-      <tr>
-        <td>**11**</td>
-        <td>Click on&nbsp;![]({{file name='editor_area.gif' space='studio' page='studio-icons-index'}}) if you want to edit the widget label, then click on **Save** in the popup when you're done</td>
-      </tr>
-      <tr>
-        <td colspan="2" align="center">
-          ![]({{file name='edit_layout_contract.png'}} ?w=600,border=true)
-          *Edit Layout Tab*
-        </td>
-      </tr>
-      <tr>
-        <td>**12**</td>
-        <td>On the View Layout click on the button **Import Layout** and select **Import 'edit' layout**.</td>
-      </tr>
-      <tr>
-        <td>**13**</td>
-        <td>Click on **Save.**</td>
-      </tr>
-      <tr>
-        <td>**14**</td>
-        <td>Deploy your changes on your Nuxeo Platform instance.</td>
-      </tr>
-      <tr>
-        <td>**15**</td>
-        <td>Now go to a workspace in your Nuxeo Platform instance and create a new Contract document!</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+1.  In Studio's menu, under **Customization**, click on the **Content Model** section, then **Document Types**. Click on the **New** button.
+2.  Fill in the creation form as follows and click on **Next**:
+      **ID**: Contract
+      **Extends**: File
+      **Label**: Contract
+      **Description**: Contract document type for internal use.
+    Your document type is created.
+3.  Fill in the [**Definition** tab]({{page space='studio' page='documents'}}):
+![]({{file name='definition_contract.png'}} ?w=600,h=365,border=true)
+4.  Fill in the [**Schema** tab]({{page space='studio' page='schemas'}}) with the following metadata:
+![]({{file name='schema_contract.png'}} ?w=600,border=true)
+
+Now we'll customize the form that's used to **create** the document. On the **Creation Layout** tab:
+
+5.  Click on the ![]({{file name='delete.gif' space='studio' page='studio-icons-index'}}) icon to remove the WARNING and Description widgets.
+6.  Drag and drop the fields **Owner**, **Start** and **Policy** from the schema **Contract** to the grid.
+7.  Click on&nbsp;![]({{file name='editor_area.gif' space='studio' page='studio-icons-index'}}) if you wish to edit a label, then click on **Save** in the popup when you're done.
+
+![]({{file name='creation_layout_contract.png'}} ?w=580,border=true)
+*Creation Layout Tab*
+
+On the **Edit Layout** tab, we can customize the form used to update the metadata of the document:
+
+8.  Click on the button **Import Layout** and select **Import 'create' layout**.
+9.  Click on the button **Add Row**.
+10. Drag and drop the field **Reminder** from the schema **Contract** to the grid.
+11. Click on&nbsp;![]({{file name='editor_area.gif' space='studio' page='studio-icons-index'}}) if you want to edit the widget label, then click on **Save** in the popup when you're done.
+
+![]({{file name='edit_layout_contract.png'}} ?w=600,border=true)
+*Edit Layout Tab*
+
+12. On the View Layout click on the button **Import Layout** and select **Import 'edit' layout**.
+13. Click on **Save**.
+14. Deploy your changes on your Nuxeo Platform instance.
+15. Now go to a workspace in your Nuxeo Platform instance and create a new Contract document!
 
 {{#> callout type='info' }}
 
