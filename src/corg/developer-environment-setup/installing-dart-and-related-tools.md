@@ -39,13 +39,13 @@ history:
 
 ---
 
-See [https://www.dartlang.org/tools/download.html](https://www.dartlang.org/tools/download.html)
+See <https://www.dartlang.org/tools/download.html>
 
 ## Installing Dart
 
 ### Linux
 
-{{#> panel type='code' heading='Manual install of Dart'}}
+Manual install of Dart
 
 ```bash
 sudo apt-get install apt-transport-https
@@ -57,10 +57,7 @@ sudo apt-get install dart
 sudo update-alternatives --install /usr/bin/dart dart /usr/lib/dart/bin/dart 0
 sudo update-alternatives --install /usr/bin/pub pub /usr/lib/dart/bin/pub 0
 sudo update-alternatives --install /usr/bin/dart2js dart2js /usr/lib/dart/bin/dart2js 0
-
 ```
-
-{{/panel}}
 
 ### OS X
 
@@ -71,6 +68,6 @@ brew tap dart-lang/dart
 brew install dart --with-dartium
 ```
 
-### Eclipse
+### Dart Tools
 
-Install from [http://www.dartlang.org/eclipse/update/channels/stable/](http://www.dartlang.org/eclipse/update/channels/stable/)
+Dart plugins exist for many commonly used IDEs. See <https://www.dartlang.org/tools>
